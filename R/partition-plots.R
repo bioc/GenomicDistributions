@@ -146,13 +146,6 @@ genomePartitionList = function(genesGR, exonsGR, threeUTRGR=NULL,
       nonThreeFive = GenomicRanges::setdiff(nonThree, fiveUTRGR)
       intronGR = GenomicRanges::setdiff(nonThreeFive, exonsGR)
       
-      partitionList = list(promoterCore=promCore,
-                           promoterProx=promoterProx,
-                           threeUTR=threeUTRGR,
-                           fiveUTR=fiveUTRGR,
-                           exon=exonsGR,
-                           intron=intronGR)
-      
     } else if (is.null(threeUTRGR) & !is.null(fiveUTRGR)){
       # we have only 5' elements
       exonsGR = GenomicRanges::setdiff(exonsGR, fiveUTRGR)
@@ -161,12 +154,6 @@ genomePartitionList = function(genesGR, exonsGR, threeUTRGR=NULL,
       nonFive = GenomicRanges::setdiff(genesGR, fiveUTRGR)
       intronGR = GenomicRanges::setdiff(nonFive, exonsGR)
       
-      partitionList = list(promoterCore=promCore,
-                           promoterProx=promoterProx,
-                           fiveUTR=fiveUTRGR,
-                           exon=exonsGR,
-                           intron=intronGR)
-      
     } else if (!is.null(threeUTRGR) & is.null(fiveUTRGR)){
       # we have only 3' elements
       exonsGR = GenomicRanges::setdiff(exonsGR, threeUTRGR)
@@ -174,22 +161,19 @@ genomePartitionList = function(genesGR, exonsGR, threeUTRGR=NULL,
       #   introns = gene - (3'UTR, exons)
       nonThree = GenomicRanges::setdiff(genesGR, threeUTRGR)
       intronGR = GenomicRanges::setdiff(nonThree, exonsGR)
-      
-      partitionList = list(promoterCore=promCore,
-                           promoterProx=promoterProx,
-                           threeUTR=threeUTRGR,
-                           exon=exonsGR,
-                           intron=intronGR)
     } else {
       # we don't have either 3' or 5' elements
       
       #   introns = gene - exons
       intronGR = GenomicRanges::setdiff(genesGR, exonsGR)
-      partitionList = list(promoterCore=promCore,
-                           promoterProx=promoterProx,
-                           exon=exonsGR,
-                           intron=intronGR)
     }
+
+    partitionList = list(promoterCore=promCore,
+                         promoterProx=promoterProx,
+                         threeUTR=threeUTRGR,
+                         fiveUTR=fiveUTRGR,
+                         exon=exonsGR,
+                         intron=intronGR)
 
 
     return(Filter(Negate(is.null), partitionList))
