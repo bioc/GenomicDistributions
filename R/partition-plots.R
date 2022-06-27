@@ -135,22 +135,61 @@ genomePartitionList = function(genesGR, exonsGR, threeUTRGR=NULL,
     # subtract overlaps (promoterCore lies within PromoterProx)
     promoterProx = GenomicRanges::setdiff(promProx, promCore)
 
-    # remove any possible overlaps between classes
-    fiveUTRGR = GenomicRanges::setdiff(fiveUTRGR, threeUTRGR)
-    exonsGR = GenomicRanges::setdiff(exonsGR, threeUTRGR)
-    exonsGR = GenomicRanges::setdiff(exonsGR, fiveUTRGR)
-
-    #   introns = gene - (5'UTR, 3'UTR, exons)
-    nonThree = GenomicRanges::setdiff(genesGR, threeUTRGR)
-    nonThreeFive = GenomicRanges::setdiff(nonThree, fiveUTRGR)
-    intronGR = GenomicRanges::setdiff(nonThreeFive, exonsGR)
-
-    partitionList = list(promoterCore=promCore,
-                         promoterProx=promoterProx,
-                         threeUTR=threeUTRGR,
-                         fiveUTR=fiveUTRGR,
-                         exon=exonsGR,
-                         intron=intronGR)
+    if(!is.null(threeUTRGR) & !is.null(fiveUTRGR)){
+      # we have both 3' and 5' elements
+      fiveUTRGR = GenomicRanges::setdiff(fiveUTRGR, threeUTRGR)
+      exonsGR = GenomicRanges::setdiff(exonsGR, threeUTRGR)
+      exonsGR = GenomicRanges::setdiff(exonsGR, fiveUTRGR)
+      
+      #   introns = gene - (5'UTR, 3'UTR, exons)
+      nonThree = GenomicRanges::setdiff(genesGR, threeUTRGR)
+      nonThreeFive = GenomicRanges::setdiff(nonThree, fiveUTRGR)
+      intronGR = GenomicRanges::setdiff(nonThreeFive, exonsGR)
+      
+      partitionList = list(promoterCore=promCore,
+                           promoterProx=promoterProx,
+                           threeUTR=threeUTRGR,
+                           fiveUTR=fiveUTRGR,
+                           exon=exonsGR,
+                           intron=intronGR)
+      
+    } else if (is.null(threeUTRGR) & !is.null(fiveUTRGR)){
+      # we have only 5' elements
+      exonsGR = GenomicRanges::setdiff(exonsGR, fiveUTRGR)
+      
+      #   introns = gene - (5'UTR, exons)
+      nonFive = GenomicRanges::setdiff(genesGR, fiveUTRGR)
+      intronGR = GenomicRanges::setdiff(nonFive, exonsGR)
+      
+      partitionList = list(promoterCore=promCore,
+                           promoterProx=promoterProx,
+                           fiveUTR=fiveUTRGR,
+                           exon=exonsGR,
+                           intron=intronGR)
+      
+    } else if (!is.null(threeUTRGR) & is.null(fiveUTRGR)){
+      # we have only 3' elements
+      exonsGR = GenomicRanges::setdiff(exonsGR, threeUTRGR)
+      
+      #   introns = gene - (3'UTR, exons)
+      nonThree = GenomicRanges::setdiff(genesGR, threeUTRGR)
+      intronGR = GenomicRanges::setdiff(nonThree, exonsGR)
+      
+      partitionList = list(promoterCore=promCore,
+                           promoterProx=promoterProx,
+                           threeUTR=threeUTRGR,
+                           exon=exonsGR,
+                           intron=intronGR)
+    } else {
+      # we don't have either 3' or 5' elements
+      
+      #   introns = gene - exons
+      intronGR = GenomicRanges::setdiff(genesGR, exonsGR)
+      partitionList = list(promoterCore=promCore,
+                           promoterProx=promoterProx,
+                           exon=exonsGR,
+                           intron=intronGR)
+    }
 
 
     return(Filter(Negate(is.null), partitionList))
