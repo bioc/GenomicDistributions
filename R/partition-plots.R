@@ -147,7 +147,7 @@ genomePartitionList = function(genesGR, exonsGR, threeUTRGR=NULL,
         promProx = GenomicRanges::reduce(
           trim(promoters(genesGR, upstream=proxPromSize, downstream=0)))
       } else {
-        promProx = NULL
+        promoterProx = NULL
       }
     }, warning=function(w) {
         if (startsWith(conditionMessage(w), "GRanges object contains"))
@@ -157,6 +157,8 @@ genomePartitionList = function(genesGR, exonsGR, threeUTRGR=NULL,
     if(getCorePromoter & getProxProm) {
       # subtract overlaps (promoterCore lies within PromoterProx)
       promoterProx = GenomicRanges::setdiff(promProx, promCore)
+    } else if (getProxProm) {
+      promoterProx = promProx
     }
 
     if(!is.null(threeUTRGR) & !is.null(fiveUTRGR)){
