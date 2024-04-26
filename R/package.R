@@ -22,7 +22,7 @@
 #'             tstrsplit as.data.table foverlaps
 #' @importFrom reshape2 melt
 #' @importFrom IRanges IRanges Views
-#' @importFrom Biostrings alphabetFrequency type
+#' @importFrom Biostrings alphabetFrequency
 #' @importFrom methods is
 #' @importFrom stats chisq.test
 #' @importFrom utils installed.packages getAnywhere data globalVariables download.file
@@ -66,7 +66,7 @@ if(getRversion() >= "2.15.1") {
         "i.start", "minEnd", "i.end", "overlap", "gene_biotype", "dinucleotide",
         "frequency", "L1", "V4", "colName", "i", "j", ".x", "lowerColorColumn",
         "midpoint", "ubinID", "x.binID", "x.start", "x.end", "FreqPercent",
-        "Chi.square.pval", "score"))
+        "Chi.square.pval", "score", "type"))
 }
 
 
